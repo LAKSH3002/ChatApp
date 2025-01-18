@@ -1,10 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:telechat/Screens/auth/loginScreen.dart';
+import 'package:telechat/firebase_options.dart';
 
 late Size mq;
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, DeviceOrientation.portraitDown
+  ]).then((value) {
+  _initializeFirebase();
   runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -14,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'TeleChat',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -27,7 +39,7 @@ class MyApp extends StatelessWidget {
         iconTheme: IconThemeData(
           color: Colors.black
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 188, 122, 122),
         centerTitle: true,
         elevation: 1,
         )
@@ -35,4 +47,10 @@ class MyApp extends StatelessWidget {
       home: const LoginScreen()
     );
   }
+}
+
+_initializeFirebase() async{
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
 }
