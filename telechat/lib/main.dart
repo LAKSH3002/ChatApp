@@ -8,14 +8,8 @@ late Size mq;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp, DeviceOrientation.portraitDown
-  ]).then((value) {
   _initializeFirebase();
   runApp(const MyApp());
-  });
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +33,7 @@ class MyApp extends StatelessWidget {
         iconTheme: IconThemeData(
           color: Colors.black
         ),
-        backgroundColor: const Color.fromARGB(255, 188, 122, 122),
+        backgroundColor: Color.fromARGB(255, 95, 228, 12),
         centerTitle: true,
         elevation: 1,
         )

@@ -1,0 +1,16 @@
+<item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
+SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+SystemChrome.setPreferredOrientations([
+DeviceOrientation.portraitUp, DeviceOrientation.portraitDown
+]).then((value) {
+_initializeFirebase();
+runApp(const MyApp());
+});
+
+Animation Screen making is left: 
+Video 13 
