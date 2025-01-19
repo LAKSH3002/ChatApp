@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:telechat/Widgets/chat_user_card.dart';
+// import 'package:telechat/Widgets/chat_user_card.dart';
+import 'package:telechat/api/apis.dart';
+import 'package:telechat/models/chat_user.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -12,6 +17,9 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+
+  List<ChatUser> list = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +34,34 @@ class _HomescreenState extends State<Homescreen> {
         ],
       ),
 
-      body: ListView.builder(
-        itemCount: 9,
-        padding: EdgeInsets.only(top:8),
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index){
-          return ChatUserCard();
-        }),
+      body: StreamBuilder(
+        stream: APIs.firestore.collection('users').snapshots(),
+        builder: (context, snapshot){
+          switch(snapshot.connectionState){
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return const Center(child: CircularProgressIndicator(),);
+            case ConnectionState.active:
+            case ConnectionState.done:
+              final data = snapshot.data?.docs;
+              list = data?.map((e)=> ChatUser.fromJson(e.data())).toList() ?? [];
+          }
+
+         if(list.isNotEmpty){
+           return ListView.builder(
+          itemCount: list.length,
+          padding: EdgeInsets.only(top:8),
+          physics: BouncingScrollPhysics(),
+          itemBuilder: (context, index){
+            return ChatUserCard(user: list[index]);
+          });
+         }
+         else{
+          return Center(child: Text('No connections found'),);
+         }
+        },
+        
+      ),
 
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10),
