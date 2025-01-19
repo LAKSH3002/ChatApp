@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1038740925956",
+    "project_id": "telechat---chatapp",
+    "storage_bucket": "telechat---chatapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038740925956:android:d2a3450376ed0c27424f51",
+        "android_client_info": {
+          "package_name": "com.example.telechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1038740925956-s2sp1go4oloc3nej6jj6729t3673o3k9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.telechat",
+            "certificate_hash": "1d0d8d7a6b3e0a94290299936928b5bb411fa84c"
+          }
+        },
+        {
+          "client_id": "1038740925956-loibu6o0qr2b2t244ucurgcv5hievis4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABGjBrLDN3JjoVrvM_5HrxDqqJ7blRKoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1038740925956-loibu6o0qr2b2t244ucurgcv5hievis4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1038740925956-q10gm05m7blr2im49ikejeq81t888o2c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telechat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

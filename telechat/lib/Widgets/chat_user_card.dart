@@ -24,9 +24,16 @@ class _ChatUserCardState extends State<ChatUserCard> {
         onTap: (){},
         child: ListTile(
           leading: CircleAvatar(child: Icon(CupertinoIcons.person),),
-          title: Text(widget.user.name),
-          subtitle: Text(widget.user.email, maxLines: 1,),
-          trailing: Text('12:00pm', style: TextStyle(color: Colors.black54),),
+          title: Text(widget.user.email),
+          subtitle: Text(widget.user.name, maxLines: 1,),
+          trailing: Container(
+            width: 15,
+            height: 15,
+            decoration: BoxDecoration(
+              color: Colors.greenAccent.shade400,
+              borderRadius: BorderRadius.circular(10)
+            ),
+          ),
         ),
       ),
     );

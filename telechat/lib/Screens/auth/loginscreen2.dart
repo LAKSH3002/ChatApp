@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:telechat/Screens/HomeScreen.dart';
+// import 'package:telechat/Screens/HomeScreen.dart';
 import 'package:telechat/Screens/auth/SignUpScreen.dart';
 
 class Login_Screen2 extends StatefulWidget {

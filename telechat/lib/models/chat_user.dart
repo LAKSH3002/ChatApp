@@ -4,7 +4,7 @@ class ChatUser {
   String? lastActive;
   String? about;
   late final String name;
-  bool? isOnline;
+  // bool? isOnline;
   String? id;
   late final String email;
   String? pushToken;
@@ -15,7 +15,7 @@ class ChatUser {
       this.lastActive,
       this.about,
       required this.name,
-      this.isOnline,
+      // this.isOnline,
       this.id,
       required this.email,
       this.pushToken});
@@ -26,7 +26,7 @@ class ChatUser {
     lastActive = json['lastActive'] ?? '';
     about = json['about'] ?? '';
     name = json['name'] ?? '';
-    isOnline = json['isOnline'] ?? '';
+    // isOnline = json['isOnline'] ?? '';
     id = json['id'] ?? '';
     email = json['email'] ?? '';
     pushToken = json['push_token'] ?? '';
@@ -39,7 +39,7 @@ class ChatUser {
     data['lastActive'] = this.lastActive;
     data['about'] = this.about;
     data['name'] = this.name;
-    data['isOnline'] = this.isOnline;
+    // data['isOnline'] = this.isOnline;
     data['id'] = this.id;
     data['email'] = this.email;
     data['push_token'] = this.pushToken;

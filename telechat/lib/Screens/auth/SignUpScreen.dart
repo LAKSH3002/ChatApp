@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:telechat/Screens/HomeScreen.dart';
 import 'package:telechat/Screens/auth/loginscreen2.dart';
+import 'package:telechat/api/apis.dart';
 
 class OnBoarding4 extends StatefulWidget {
   const OnBoarding4({super.key});
@@ -219,11 +220,12 @@ class _OnBoarding4State extends State<OnBoarding4> {
                               print('Email: ${emailcontroller.text}');
                               print('Password: ${passwordcontroller.text}');
                             }
+                            
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                                     email: emailcontroller.text,
                                     password: passwordcontroller.text)
-                                .then((value) {
+                                .then((value) async {
                               print("New Account Created");
                               showDialog(
                                 context: context,
@@ -251,7 +253,10 @@ class _OnBoarding4State extends State<OnBoarding4> {
                                   ],
                                 ),
                               );
-                            });
+                            await APIs.createuser();  
+                            }
+                            
+                            );
                           } catch (e) {
                             print(e);
                             print("Incomplete Entries");
