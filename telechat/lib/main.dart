@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:telechat/Screens/HomeScreen.dart';
 import 'package:telechat/Screens/auth/loginScreen.dart';
 import 'package:telechat/firebase_options.dart';
 
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         elevation: 1,
         )
       ),
-      home: const LoginScreen()
+      home: LoginScreen()
     );
   }
 }

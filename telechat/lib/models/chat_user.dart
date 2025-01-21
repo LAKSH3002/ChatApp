@@ -1,22 +1,22 @@
 class ChatUser {
-  String? createdAt;
-  late final String image;
-  String? lastActive;
-  String? about;
-  late final String name;
+  late String createdAt;
+  late String image;
+  late String lastActive;
+  late String about;
+  late String name;
   // bool? isOnline;
-  String? id;
-  late final String email;
+  late String id;
+  late String email;
   String? pushToken;
 
   ChatUser(
-      {this.createdAt,
+      {required this.createdAt,
       required this.image,
-      this.lastActive,
-      this.about,
+      required this.lastActive,
+      required this.about,
       required this.name,
       // this.isOnline,
-      this.id,
+      required this.id,
       required this.email,
       this.pushToken});
 
