@@ -23,3 +23,16 @@ configurations.all {
         force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
     }
 }
+
+buildscript {
+    ext.kotlin_version = '1.8.22' // Change here
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}

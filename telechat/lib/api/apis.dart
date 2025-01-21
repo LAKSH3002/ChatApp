@@ -9,8 +9,8 @@ class APIs {
 
   static User get user => auth.currentUser!;
 
-  // for storing self information
-  static late ChatUser me;
+ // for storing self information
+  static ChatUser? me;
 
   // For checking if user exists or not
   static Future<bool> userExists() async {
@@ -21,15 +21,14 @@ class APIs {
         .exists;
   }
 
-  // for getting current user info
-  static Future<void> getSelfInfo() async{
+   // for getting current user info
+  static Future<void> getSelfInfo() async {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
-      if(user.exists){
+      if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
         print('My Data: ${user.data()}');
-      }
-      else{
-        await createuser().then((value)=>getSelfInfo());
+      } else {
+        await createuser().then((value) => getSelfInfo());
       }
     });
   }
@@ -39,13 +38,14 @@ class APIs {
   {
     // Video 20 for date and time
     final Chatuser = ChatUser(
-        lastActive: user.toString(),
-        createdAt: user.toString(),
-        about: user.toString(),
-        id: user.uid.toString(),
-        image: user.photoURL.toString(),
-        name: user.displayName.toString(),
-        email: user.email.toString());
+   id: user.uid,
+      name: user.displayName.toString(),
+      email: user.email.toString(),
+      image: user.photoURL.toString(),
+      about: 'Hey there! I am using TeleChat.',
+      createdAt: DateTime.now().toString(),
+      lastActive: DateTime.now().toString(),
+      );
     return await firestore
         .collection('users')
         .doc(user.uid)
@@ -63,8 +63,13 @@ class APIs {
             .collection('users')
             .doc(user.uid)
             .update({
-              'name': me.name,
-              'about': me.about
+              'name': me!.name,
+              'about': me!.about
             });
+  }
+
+    static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMsg()
+  {
+    return firestore.collection('Messages').snapshots();
   }
 }

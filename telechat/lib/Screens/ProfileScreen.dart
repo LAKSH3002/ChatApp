@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:telechat/Screens/auth/loginScreen.dart';
 import 'package:telechat/api/apis.dart';
 import 'package:telechat/helper/dialogs.dart';
@@ -21,6 +24,7 @@ class Profilescreen extends StatefulWidget {
 class _ProfilescreenState extends State<Profilescreen> {
 
   final _formkey = GlobalKey<FormState>();
+  String? _image;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -33,13 +37,26 @@ class _ProfilescreenState extends State<Profilescreen> {
         body: Form(
           key: _formkey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(width: 10, height: 40,),
                   Stack(
                     children: [
+                      _image !=null ? 
+                      // image from local
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.file(
+                          File(_image!),
+                          width: 200,
+                          height: 125,
+                          fit: BoxFit.cover,
+                        )
+                      )
+                      :
+                      //image from server
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: CachedNetworkImage(
@@ -50,7 +67,6 @@ class _ProfilescreenState extends State<Profilescreen> {
                           errorWidget: (context, url, error)=>
                           const CircleAvatar(child: Icon(CupertinoIcons.person, size: 70,),),),
                       ),
-                    
                       Positioned(
                        bottom: 0,
                        right: 0, 
@@ -84,7 +100,18 @@ class _ProfilescreenState extends State<Profilescreen> {
                           backgroundColor: Colors.white,
                           shape: const CircleBorder(),
                           ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final ImagePicker picker = ImagePicker();
+                          // Pick an image.
+                          final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                          if(image != null){
+                            setState(() {
+                              _image = image.path;
+                            });
+                            print('Image path: ${image.path} -- MimeType: ${image.mimeType}');
+                          Navigator.pop(context);
+                          }
+                        },
                         child: Image.asset('images/image-gallery.png', height: 70, width: 50,)),
 
                         //take picture from camera button
@@ -93,7 +120,18 @@ class _ProfilescreenState extends State<Profilescreen> {
                           backgroundColor: Colors.white,
                           shape: const CircleBorder(),
                           ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final ImagePicker picker = ImagePicker();
+                          // Pick an image.
+                          final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                          if(image != null){
+                            setState(() {
+                              _image = image.path;
+                            });
+                            print('Image path: ${image.path} -- MimeType: ${image.mimeType}');
+                          Navigator.pop(context);
+                          }
+                        },
                         child: Image.asset('images/photo-camera-interface-symbol-for-button.png', height: 70, width: 50,)),
                          ],)
                          ],);
@@ -111,19 +149,19 @@ class _ProfilescreenState extends State<Profilescreen> {
                   ),),
                   SizedBox(width: 10, height: 20,),
                   TextFormField(
-                    initialValue: widget.user.name,
-                    onSaved: (val) => APIs.me.name = val ?? '',
+                    initialValue: widget.user.email,
+                    onSaved: (val) => APIs.me?.email = val ?? '',
                     validator: (val)=> val != null && val.isNotEmpty ? null :'Required',
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       prefixIcon: Icon(Icons.person, color: Colors.blue,),
-                      hintText: 'eg. Laksh Doshi',
-                      label: Text('Name')
+                      hintText: 'eg. abc@gmail.com',
+                      label: Text('Email')
                     ),
                   ),
                  SizedBox(width: 10, height: 20,),
                   TextFormField(
-                    onSaved: (val)=>APIs.me.about = val?? '',
+                    onSaved: (val)=>APIs.me?.about = val?? '',
                     validator: (val)=> val!= null && val.isNotEmpty?null:'Required',
                     initialValue: widget.user.about,
                     decoration: InputDecoration(
@@ -173,7 +211,7 @@ class _ProfilescreenState extends State<Profilescreen> {
             });
             
           },
-          icon: Icon(Icons.add_circle_outlined),label: Text('Logout'),),
+          icon: Icon(Icons.add_circle_outlined, color: Colors.white,),label: Text('Logout',style: TextStyle(color: Colors.white),),),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:telechat/Screens/ChatScreen.dart';
 import 'package:telechat/models/chat_user.dart';
 // import 'package:telechat/main.dart';
 
@@ -18,10 +19,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: Color.fromARGB(255, 240, 179, 179),
-      elevation: 1,
+      color: Color.fromARGB(255, 237, 228, 228),
+      elevation: 2,
       child: InkWell(
-        onTap: (){},
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (_)=> Chatscreen(user: widget.user,)));
+        },
         child: ListTile(
           leading: CircleAvatar(child: Icon(CupertinoIcons.person),),
           title: Text(widget.user.email),
@@ -30,7 +33,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
             width: 15,
             height: 15,
             decoration: BoxDecoration(
-              color: Colors.greenAccent.shade400,
+              color: Colors.deepOrangeAccent,
               borderRadius: BorderRadius.circular(10)
             ),
           ),
