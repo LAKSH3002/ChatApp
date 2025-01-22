@@ -5,6 +5,7 @@ import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:flutter_notification_channel/notification_visibility.dart';
 import 'package:telechat/Screens/HomeScreen.dart';
+import 'package:telechat/Screens/SplashScreen.dart';
 import 'package:telechat/Screens/auth/loginScreen.dart';
 import 'package:telechat/firebase_options.dart';
 
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
             centerTitle: true,
             elevation: 1,
           )),
-      home: Homescreen(),
+      home: Splashscreen(),
     );
   }
 }

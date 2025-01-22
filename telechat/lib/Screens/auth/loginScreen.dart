@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
             top: mq.height*.15,
             width: mq.width*.5,
             duration: Duration(seconds: 1),
-            child: Image.asset('images/chat.png')),
+            child: Image.asset('images/chat_new.png')),
       
       Positioned(
             bottom: mq.height*.20,

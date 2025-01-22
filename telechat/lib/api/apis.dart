@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
+
 import 'package:telechat/api/access_firebase_token.dart';
 import 'package:telechat/models/Messages.dart';
 import 'package:telechat/models/chat_user.dart';
@@ -21,7 +23,7 @@ class APIs {
   // for getting firebase messaging token
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    // for accessing firebase messaging (Push Notification)
+  // for accessing firebase messaging (Push Notification)
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
   // for getting firebase messaging token
@@ -30,19 +32,19 @@ class APIs {
 
     await fMessaging.getToken().then((t) {
       if (t != null) {
-        me?.pushToken = t;
+        me!.pushToken = t;
         print('Push Token: $t');
       }
     });
     // for handling foreground messages
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   print('Got a message whilst in the foreground!');
-    //   print('Message data: ${message.data}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
 
-    //   if (message.notification != null) {
-    //     print('Message also contained a notification: ${message.messageId}');
-    //   }
-    // });
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   // For checking if user exists or not
@@ -161,33 +163,74 @@ class APIs {
     });
   }
 
-  // for sending push notification
-  static Future<void> sendPushNotification( ChatUser chatUser, String msg) async {
-    AccessFirebaseToken accessToken = AccessFirebaseToken();
-    String bearerToken = await accessToken.getAccessToken();
-    final body = {
-    "message": {
-    "token": chatUser.pushToken,
-    "notification": {
-    "title": chatUser.name,
-    "body": msg,
-    "android_channel_id":"chats"
-    },
-    }
-    };
-    try {
-    var res = await post(
-    Uri.parse('https://fcm.googleapis.com/v1/projects/telechat---chatapp/messages:send'),
-    headers: {
-    "Content-Type": "application/json",
-    'Authorization': 'Bearer $bearerToken'
-    },
-    body: jsonEncode(body),
-    );
-    print("Response statusCode: ${res.statusCode}");
-    print("Response body: ${res.body}");
+  // // for sending push notification
+  // static Future<void> sendPushNotification( ChatUser chatUser, String msg) async {
+  //   AccessFirebaseToken accessToken = AccessFirebaseToken();
+  //   String bearerToken = await accessToken.getAccessToken();
+  //   final body = {
+  //   "message": {
+  //   "token": chatUser.pushToken,
+  //   "notification": {
+  //   "title": chatUser.name,
+  //   "body": msg,
+  //   "android_channel_id":"chats"
+  //   },
+  //   }
+  //   };
+  //   try {
+  //   var res = await post(
+  //   Uri.parse('https://fcm.googleapis.com/v1/projects/telechat---chatapp/messages:send'),
+  //   headers: {
+  //   "Content-Type": "application/json",
+  //   'Authorization': 'Bearer $bearerToken'
+  //   },
+  //   body: jsonEncode(body),
+  //   );
+  //   print("Response statusCode: ${res.statusCode}");
+  //   print("Response body: ${res.body}");
+  //   } catch (e) {
+  //   print("\nsendPushNotification: $e");
+  //   }
+  //     }
+
+    // for sending push notification (Updated Codes)
+  static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
+      try {
+      final body = {
+        "message": {
+          "token": chatUser.pushToken,
+          "notification": {
+            "title": me?.name, //our name should be send
+            "body": msg,
+          },
+        }
+      };
+      // Firebase Project > Project Settings > General Tab > Project ID
+      const projectID = 'telechat---chatapp';
+      // get firebase admin token
+      final bearerToken = await AccessFirebaseToken.getAccessToken;
+
+      print('bearerToken: $bearerToken');
+
+      // handle null token
+      // ignore: unnecessary_null_comparison
+      if (bearerToken == null) return;
+      var res = await post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
+        },
+        body: jsonEncode(body),
+      );
+
+      print('Response status: ${res.statusCode}');
+      print('Response body: ${res.body}');
     } catch (e) {
-    print("\nsendPushNotification: $e");
+      print('\nsendPushNotificationE: $e');
     }
-      }
+  }
+
 }
