@@ -48,14 +48,14 @@ class _OnBoarding4State extends State<OnBoarding4> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: const Color.fromARGB(255, 239, 239, 206),
         elevation: 5,
         centerTitle: true,
         title: Text(
           'TeleChat',
           style: TextStyle(
               fontSize: 20,
-              color: Colors.greenAccent,
+              color: const Color.fromARGB(255, 24, 24, 24),
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
@@ -82,7 +82,7 @@ class _OnBoarding4State extends State<OnBoarding4> {
 
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 15),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
                   child: SizedBox(
                     width: screenwidth * 0.93,
                     child: TextFormField(
@@ -97,10 +97,10 @@ class _OnBoarding4State extends State<OnBoarding4> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.person),
+                        prefixIcon: Icon(Icons.person, color: Colors.lightBlue),
                         hintText: "Enter Your Full name*",
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
+                            borderRadius: BorderRadius.circular(10.0)),
                         errorBorder: OutlineInputBorder(),
                       ),
                     ),
@@ -110,17 +110,17 @@ class _OnBoarding4State extends State<OnBoarding4> {
 
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 15),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
                   child: SizedBox(
                     width: screenwidth * 0.93,
                     child: TextFormField(
                       controller: emailcontroller,
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email),
+                        prefixIcon: Icon(Icons.email, color: Colors.lightBlue),
                         hintText: "Enter Your Email id*",
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
+                            borderRadius: BorderRadius.circular(10.0)),
                         errorBorder: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -141,17 +141,17 @@ class _OnBoarding4State extends State<OnBoarding4> {
 
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 15),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
                   child: SizedBox(
                     width: screenwidth * 0.93,
                     child: TextFormField(
                         controller: passwordcontroller,
                         obscureText: passwordVisible,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.password_rounded),
+                          prefixIcon: Icon(Icons.password_rounded, color: Colors.lightBlue),
                           hintText: "Create Your Own Password*",
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0)),
+                              borderRadius: BorderRadius.circular(10.0)),
                           errorBorder: OutlineInputBorder(),
                           helperText: "Password must be 6 characters long",
                           suffixIcon: IconButton(
@@ -194,7 +194,7 @@ class _OnBoarding4State extends State<OnBoarding4> {
                     },
                     child: Text(
                       'Already Have an Account?? Log_In',
-                      style: TextStyle(fontSize: 19),
+                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                     )),
               ),
 
@@ -210,8 +210,7 @@ class _OnBoarding4State extends State<OnBoarding4> {
                     height: 45,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.yellowAccent,
-                            backgroundColor: Colors.deepPurple),
+                            foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent.shade100),
                         // User entry with email and password.
                         onPressed: () async {
                           try {
@@ -224,7 +223,8 @@ class _OnBoarding4State extends State<OnBoarding4> {
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                                     email: emailcontroller.text,
-                                    password: passwordcontroller.text)
+                                    password: passwordcontroller.text,
+                                    )
                                 .then((value) async {
                               print("New Account Created");
                               showDialog(
@@ -245,7 +245,11 @@ class _OnBoarding4State extends State<OnBoarding4> {
                                             .onError((error, stackTrace) {});
                                       },
                                       child: Container(
-                                        color: Colors.green,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.green,
+                                        ),
+                                        
                                         padding: const EdgeInsets.all(14),
                                         child: const Text("okay"),
                                       ),

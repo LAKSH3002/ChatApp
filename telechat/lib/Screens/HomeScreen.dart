@@ -34,11 +34,10 @@ class _HomescreenState extends State<Homescreen> {
       onTap: () => Focus.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 239, 239, 206),
           leading: Icon(CupertinoIcons.home),
           title: Text('TeleChat'),
           actions: [
-            // // Icon to search
-            // IconButton(onPressed: (){}, icon: Icon(Icons.search)),
             // Icon to move to profile page
             IconButton(
                 onPressed: () {

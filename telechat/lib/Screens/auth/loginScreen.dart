@@ -81,10 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 239, 239, 206),
         automaticallyImplyLeading: false,
         title: Text('Welcome to TeleChat', 
         style: TextStyle(
+          letterSpacing: 1,
           fontSize: 20,
+          color: const Color.fromARGB(255, 24, 24, 24),
           fontWeight: FontWeight.w700),),
       ),
 

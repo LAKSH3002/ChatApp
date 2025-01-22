@@ -25,16 +25,16 @@ class _Login_Screen2State extends State<Login_Screen2> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: const Color.fromARGB(255, 239, 239, 206),
         elevation: 5,
         centerTitle: true,
         title: Text(
           'TeleChat',
           style: TextStyle(
-              fontSize: 20,
-              color: Colors.greenAccent,
-              fontWeight: FontWeight.bold),
-        ),
+            letterSpacing: 1,
+          fontSize: 20,
+          color: const Color.fromARGB(255, 24, 24, 24),
+          fontWeight: FontWeight.w700),),
       ),
       body: Form(
         key: _formkey,
@@ -43,7 +43,19 @@ class _Login_Screen2State extends State<Login_Screen2> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height:150),
+              const SizedBox(height:30),
+      
+              Image.asset('images/chat.png', height: 180),
+      
+              SizedBox(height: 10,),
+      
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                child: const Text(
+                  "Enter The Following Details to Log In",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 230, 44, 44)),
+                ),
+              ),
           
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -51,10 +63,10 @@ class _Login_Screen2State extends State<Login_Screen2> {
                   controller: emailcontroller,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    hintText: "Enter Your Email id*",
+                    prefixIcon: Icon(Icons.email, color: Colors.lightBlue,),
+                    hintText: "Enter Your Email Id*",
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
+                        borderRadius: BorderRadius.circular(10.0)),
                     errorBorder: OutlineInputBorder(),
                   ),
                   validator: (value) {
@@ -77,10 +89,10 @@ class _Login_Screen2State extends State<Login_Screen2> {
                     obscureText: passwordVisible,
                     controller: passwordcontroller,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.password_rounded),
+                      prefixIcon: Icon(Icons.password_rounded, color: Colors.lightBlue,),
                       hintText: "Enter Your Password*",
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
+                          borderRadius: BorderRadius.circular(10.0)),
                       errorBorder: OutlineInputBorder(),
                       // helperText:"Password must contain special character",
                       suffixIcon: IconButton(
@@ -117,7 +129,7 @@ class _Login_Screen2State extends State<Login_Screen2> {
                   height: 45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.yellowAccent, backgroundColor: Colors.deepPurple),
+                        foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent.shade100),
                     onPressed: () async {
                       if (_formkey.currentState!.validate()) {
                         print('Email: ${emailcontroller.text}');
@@ -154,7 +166,7 @@ class _Login_Screen2State extends State<Login_Screen2> {
                     },
                     child: Text(
                       'Dont have an Account?? Sign_Up',
-                      style: TextStyle(fontSize: 19),
+                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                     )),
               ),
             ],

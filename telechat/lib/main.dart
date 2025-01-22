@@ -27,19 +27,19 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         appBarTheme: AppBarTheme(
         titleTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.normal,
-          fontSize: 19
+          color: const Color.fromARGB(255, 24, 24, 24),
+          fontWeight: FontWeight.w700,
+          fontSize: 20
         ),
         iconTheme: IconThemeData(
           color: Colors.black
         ),
-        backgroundColor: Color.fromARGB(255, 95, 228, 12),
+        backgroundColor: const Color.fromARGB(255, 239, 239, 206),
         centerTitle: true,
         elevation: 1,
         )
       ),
-      home: Homescreen()
+      home: LoginScreen(),
     );
   }
 }
