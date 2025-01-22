@@ -24,7 +24,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: Color.fromARGB(255, 237, 228, 228),
+      color: Color.fromARGB(255, 250, 248, 248),
       elevation: 2,
       child: InkWell(
         onTap: (){

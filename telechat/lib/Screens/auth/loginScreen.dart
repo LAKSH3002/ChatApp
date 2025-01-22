@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   }
 
+  // ignore: unused_element
   _handleGoogleButtonClick() async{
     showDialog(context: context, builder: (_)=>const CircularProgressIndicator());
     

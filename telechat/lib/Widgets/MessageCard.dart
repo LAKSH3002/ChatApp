@@ -45,16 +45,16 @@ class _MessagecardState extends State<Messagecard> {
             )
             ),
             child: Text(
-              MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              widget.message.msg,
+              style: TextStyle(fontSize: 15, color: Colors.black),
             ),
           ),
         ),
         Padding(
         padding: EdgeInsets.only(right: 10),
         child: Text(
-          widget.message.sent,
-          style: TextStyle(fontSize: 13, color: Colors.black54),
+          MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
+          style: TextStyle(fontSize: 15, color: Colors.black54),
         ),),
       ],
     );
@@ -75,7 +75,7 @@ class _MessagecardState extends State<Messagecard> {
 
             Text(
               MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: TextStyle(fontSize: 15, color: Colors.black54),
             ),
           ],
         ),
@@ -95,7 +95,7 @@ class _MessagecardState extends State<Messagecard> {
             ),
             child: Text(
               widget.message.msg,
-              style: TextStyle(fontSize: 15, color: Colors.black87),
+              style: TextStyle(fontSize: 15, color: Colors.black),
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:telechat/Screens/ProfileScreen.dart';
 import 'package:telechat/Widgets/chat_user_card.dart';
@@ -20,13 +21,27 @@ class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
     super.initState();
-   _initializeUser();
-  }
+    APIs.getSelfInfo();
+    APIs.updateActiveStatus(true);
 
-  Future<void> _initializeUser() async {
-  await APIs.getSelfInfo();
-  if (mounted) setState(() {}); // Trigger UI update after `APIs.me` is set
-}
+    //for updating user active status according to lifecycle events
+    //resume -- active or online
+    //pause  -- inactive or offline
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      print('Message: $message');
+
+      if (APIs.auth.currentUser != null) {
+        if (message.toString().contains('resume')) {
+          APIs.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')) {
+          APIs.updateActiveStatus(false);
+        }
+      }
+
+      return Future.value(message);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

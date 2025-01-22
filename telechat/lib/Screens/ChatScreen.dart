@@ -118,7 +118,13 @@ class _ChatscreenState extends State<Chatscreen>
   Widget _appbar() {
     return InkWell(
       onTap: () {},
-      child: Row(
+      child: StreamBuilder(stream: APIs.getUserInfo(widget.user), 
+      builder: (context, snapshot){
+        final data = snapshot.data?.docs;
+              final list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+              
+        return Row(
         children: [
           IconButton(
               onPressed: () {
@@ -150,7 +156,7 @@ class _ChatscreenState extends State<Chatscreen>
                 height: 3,
               ),
               Text(
-                'Last seen not availaible',
+                list.isNotEmpty ? list[0].lastActive : widget.user.lastActive,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black54,
@@ -159,7 +165,8 @@ class _ChatscreenState extends State<Chatscreen>
             ],
           )
         ],
-      ),
+      );
+      })
     );
   }
 
