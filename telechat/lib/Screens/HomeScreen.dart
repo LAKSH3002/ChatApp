@@ -16,7 +16,9 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  List<ChatUser> list = [];
+  List<ChatUser> _list = [];
+  final List<ChatUser> _searchlist = [];
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -51,8 +53,36 @@ class _HomescreenState extends State<Homescreen> {
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 239, 239, 206),
           leading: Icon(CupertinoIcons.home),
-          title: Text('TeleChat'),
+          title:  _isSearching? TextField(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: 'Email',
+            ),
+            style: TextStyle(fontSize: 16),
+            onChanged: (value){
+              // search logic
+              _searchlist.clear();
+              for(var i in _list){
+                if(i.email.toLowerCase().contains(value)){
+                  _searchlist.add(i);
+                }
+                setState(() {
+                  _searchlist;
+                });
+              }
+            },
+            autofocus: true,
+          ):  Text('TeleChat'),
           actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isSearching = !_isSearching;
+                  });
+                },
+                icon: Icon(_isSearching
+                    ? CupertinoIcons.clear_circled_solid
+                    : Icons.search)),
             // Icon to move to profile page
             IconButton(
                 onPressed: () {
@@ -87,17 +117,17 @@ class _HomescreenState extends State<Homescreen> {
               case ConnectionState.active:
               case ConnectionState.done:
                 final data = snapshot.data?.docs;
-                list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                _list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
                     [];
             }
 
-            if (list.isNotEmpty) {
+            if (_list.isNotEmpty) {
               return ListView.builder(
-                  itemCount: list.length,
+                  itemCount:  _isSearching? _searchlist.length :  _list.length,
                   padding: EdgeInsets.only(top: 8),
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return ChatUserCard(user: list[index]);
+                    return ChatUserCard(user: _isSearching? _searchlist[index]: _list[index]);
                   });
             } else {
               return Center(
