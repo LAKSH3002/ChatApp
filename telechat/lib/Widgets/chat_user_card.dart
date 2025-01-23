@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:telechat/Screens/ChatScreen.dart';
@@ -38,10 +39,18 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   data?.map((e) => Messages.fromJson(e.data())).toList() ?? [];
               if (list.isNotEmpty) _message = list[0];  
             return ListTile(
-          leading: CircleAvatar(child: Icon(CupertinoIcons.person),),
-          title: Text(widget.user.email),
-          subtitle: Text(widget.user.about, maxLines: 1,),
-          trailing:  _message == null
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: CachedNetworkImage(
+                width: 15,
+                height: 15,
+                imageUrl: widget.user.image,
+                errorWidget:(context, url, error)=> const CircleAvatar(child: Icon(Icons.person),),
+              ),
+            ),
+            title: Text(widget.user.email),
+            subtitle: Text(widget.user.about, maxLines: 1,),
+            trailing:  _message == null
                     ? null //show nothing when no message is sent
                     : _message!.read.isEmpty &&
                             _message!.fromId != APIs.user.uid

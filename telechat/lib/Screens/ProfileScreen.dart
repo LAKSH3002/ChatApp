@@ -211,7 +211,7 @@ class _ProfilescreenState extends State<Profilescreen> {
             });
             
           },
-          icon: Icon(Icons.add_circle_outlined, color: Colors.white,),label: Text('Logout',style: TextStyle(color: Colors.white),),),
+          icon: Icon(Icons.add_circle_outlined, color: Colors.white ,),label: Text('Logout',style: TextStyle(color: Colors.white),),),
         ),
       ),
     );
