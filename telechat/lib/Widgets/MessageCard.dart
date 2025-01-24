@@ -68,15 +68,15 @@ class _MessagecardState extends State<Messagecard> {
           children: [
             SizedBox(width: 10,),
 
-            if(widget.message.read.isNotEmpty) 
-            const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20,),
-
-            const SizedBox(width: 2,),
-
             Text(
               MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
               style: TextStyle(fontSize: 15, color: Colors.black54),
             ),
+
+            const SizedBox(width: 2,),
+
+            if(widget.message.read.isNotEmpty) 
+            const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20,),
           ],
         ),
 
