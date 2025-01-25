@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:telechat/Screens/HomeScreen.dart';
+import 'package:telechat/Screens/viewprofilescreen.dart';
 import 'package:telechat/Widgets/MessageCard.dart';
 import 'package:telechat/api/apis.dart';
 import 'package:telechat/models/Messages.dart';
@@ -134,7 +135,9 @@ class _ChatscreenState extends State<Chatscreen> {
   // AppBar
   Widget _appbar() {
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_)=> ViewProfileScreen(user: widget.user)));
+        },
         child: StreamBuilder(
             stream: APIs.getUserInfo(widget.user),
             builder: (context, snapshot) {
