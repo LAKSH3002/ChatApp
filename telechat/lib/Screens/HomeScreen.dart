@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:telechat/Screens/ProfileScreen.dart';
 import 'package:telechat/Widgets/chat_user_card.dart';
-import 'package:telechat/api/apis.dart';
-import 'package:telechat/helper/dialogs.dart';
+import 'package:telechat/api/apis.dart';  
 import 'package:telechat/models/chat_user.dart';
 
 class Homescreen extends StatefulWidget {
@@ -104,8 +103,10 @@ class _HomescreenState extends State<Homescreen> {
                 icon: Icon(Icons.account_box))
           ],
         ),
+        // get id of only known users
         body: StreamBuilder(
           stream: APIs.getAllUsers(),
+          // get only those users, who's id are provided
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
@@ -116,11 +117,9 @@ class _HomescreenState extends State<Homescreen> {
               case ConnectionState.active:
               case ConnectionState.done:
                 final data = snapshot.data?.docs;
-                _list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
-                    [];
-            }
-
-            if (_list.isNotEmpty) {
+                _list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+              if (_list.isNotEmpty) 
+              {
               return ListView.builder(
                   itemCount:  _isSearching? _searchlist.length :  _list.length,
                   padding: EdgeInsets.only(top: 8),
@@ -128,13 +127,14 @@ class _HomescreenState extends State<Homescreen> {
                   itemBuilder: (context, index) {
                     return ChatUserCard(user: _isSearching? _searchlist[index]: _list[index]);
                   });
-            } else {
+            } else 
+            {
               return Center(
                 child: Text('No connections found'),
               );
             }
-          },
-        ),
+          }
+        }),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FloatingActionButton(
@@ -147,7 +147,6 @@ class _HomescreenState extends State<Homescreen> {
       ),
     );
   }
-
   //dialog for updating message content
     void _addChatUserDialog() {
       String email = '';
@@ -201,17 +200,16 @@ class _HomescreenState extends State<Homescreen> {
                   //update button
                   MaterialButton(
                       onPressed: ()  async {
-                        //hide alert dialog
+                        // hide alert dialog
                         Navigator.pop(context);
-                        //for hiding bottom sheet
-                        Navigator.pop(context);
-                        if(email.isNotEmpty) {
-                          await APIs.addChatUser(email).then((value){
-                            if(!value){
-                              Dialogs.showSnackBar(context, 'User does not exists');
-                            }
-                          });
-                        }
+                        // for hiding bottom sheet
+                        // if(email.isNotEmpty) {
+                        //   await APIs.addChatUser(email).then((value){
+                        //     if(!value){
+                        //       Dialogs.showSnackBar(context, 'User does not exists');
+                        //     }
+                        //   });
+                        // }
                       },
                       child: const Text(
                         'Add',

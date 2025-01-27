@@ -83,6 +83,15 @@ class APIs {
         .set(Chatuser.toJson());
   }
 
+  // for getting all users from firestore database - did not include this feature
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersId() {
+    return firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('My_users')
+        .snapshots();
+  }
+
   // for getting all users from firestore database
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
     return firestore
@@ -264,7 +273,7 @@ class APIs {
       firestore
           .collection('users')
           .doc(user.uid)
-          .collection('my_users')
+          .collection('My_users')
           .doc(data.docs.first.id)
           .set({});
       return true;
