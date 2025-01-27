@@ -1,7 +1,9 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:telechat/api/apis.dart';
 import 'package:telechat/helper/date_util.dart';
+import 'package:telechat/helper/dialogs.dart';
 import 'package:telechat/models/Messages.dart';
 
 class Messagecard extends StatefulWidget {
@@ -119,15 +121,13 @@ class _MessagecardState extends State<Messagecard> {
           return ListView(
             shrinkWrap: true,
             padding: EdgeInsets.only(top: 20, bottom: 20),
-            children: [ 
-              
+            children: [
               Container(
                 height: 4,
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10)
-                ),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(10)),
               ),
 
               Divider(
@@ -136,11 +136,40 @@ class _MessagecardState extends State<Messagecard> {
                 indent: 20,
               ),
 
-              OptionItem(icon: Icon(Icons.copy_all_rounded), name: 'Copy Text', onTap: (){}),
+              OptionItem(
+                  icon: Icon(Icons.copy_all_rounded),
+                  name: 'Copy Text',
+                  onTap: () async {
+                    await Clipboard.setData(
+                            ClipboardData(text: widget.message.msg))
+                        .then((value) {
+                      Navigator.pop(context);
+                      Dialogs.showSnackBar(context, 'Text Copied');
+                    });
+                  }),
 
-              OptionItem(icon: Icon(Icons.edit, color: Colors.blue,), name: 'Edit Message', onTap: (){}),
+              OptionItem(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.blue,
+                  ),
+                  name: 'Edit Message',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showMessageUpdateDialog();
+                  }),
 
-              OptionItem(icon: Icon(Icons.delete_forever, color: Colors.red,), name: 'Delete Message', onTap: (){}),
+              OptionItem(
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: Colors.red,
+                  ),
+                  name: 'Delete Message',
+                  onTap: () {
+                    APIs.deleteMessage(widget.message).then((value) {
+                      Navigator.pop(context);
+                    });
+                  }),
 
               Divider(
                 color: Colors.black54,
@@ -148,9 +177,24 @@ class _MessagecardState extends State<Messagecard> {
                 indent: 20,
               ),
 
-              OptionItem(icon: Icon(Icons.remove_red_eye, color: Colors.blue,), name: 'Sent At', onTap: (){}),
+              OptionItem(
+                  icon: Icon(
+                    Icons.remove_red_eye,
+                    color: Colors.blue,
+                  ),
+                  name:
+                      'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+                  onTap: () {}),
 
-              OptionItem(icon: Icon(Icons.remove_red_eye, color: Colors.red,), name: 'Read At', onTap: (){}),
+              OptionItem(
+                  icon: Icon(
+                    Icons.remove_red_eye,
+                    color: Colors.red,
+                  ),
+                  name: widget.message.read.isNotEmpty
+                      ? 'Read At: Not seen yet'
+                      : 'Read At: Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.read)}',
+                  onTap: () {}),
 
               //pick profile picture label
               const Text('Pick Profile Picture',
@@ -163,25 +207,92 @@ class _MessagecardState extends State<Messagecard> {
           );
         });
   }
+   //dialog for updating message content
+    void _showMessageUpdateDialog() {
+      String updatedMsg = widget.message.msg;
+
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                contentPadding: const EdgeInsets.only(
+                    left: 24, right: 24, top: 20, bottom: 10),
+
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+
+                //title
+                title: const Row(
+                  children: [
+                    Icon(
+                      Icons.message,
+                      color: Colors.blue,
+                      size: 28,
+                    ),
+                    Text(' Update Message')
+                  ],
+                ),
+
+                //content
+                content: TextFormField(
+                  initialValue: updatedMsg,
+                  maxLines: null,
+                  onChanged: (value) => updatedMsg = value,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                ),
+
+                //actions
+                actions: [
+                  //cancel button
+                  MaterialButton(
+                      onPressed: () {
+                        //hide alert dialog
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      )),
+
+                  //update button
+                  MaterialButton(
+                      onPressed: () {
+                        APIs.updateMessage(widget.message, updatedMsg);
+                        //hide alert dialog
+                        Navigator.pop(context);
+
+                        //for hiding bottom sheet
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Update',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ))
+                ],
+              ));
+    }
 }
 
 class OptionItem extends StatelessWidget {
   final Icon icon;
   final String name;
   final VoidCallback onTap;
-  const OptionItem({ required this.icon, required this.name, required this.onTap });
+  const OptionItem(
+      {required this.icon, required this.name, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         onTap;
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
         child: Row(
           children: [
-            icon,Flexible(child: Text('     $name')),
+            icon,
+            Flexible(child: Text('     $name')),
           ],
         ),
       ),

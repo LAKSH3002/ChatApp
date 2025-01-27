@@ -130,10 +130,10 @@ class APIs {
 
   //update read status of message
   static Future<void> updateMessageReadStatus(Messages message) async {
-    firestore
-        .collection('chats/${getConversationID(message.fromId)}/Messages/')
-        .doc(message.sent)
-        .update({'read': DateTime.now().toString()});
+      firestore
+          .collection('chats/${getConversationID(message.fromId)}/Messages/')
+          .doc(message.sent)
+          .update({'read': DateTime.now().toString()});
   }
 
   //get only last message of a specific chat
@@ -163,7 +163,7 @@ class APIs {
     });
   }
 
-  // // for sending push notification
+  // for sending push notification
   // static Future<void> sendPushNotification( ChatUser chatUser, String msg) async {
   //   AccessFirebaseToken accessToken = AccessFirebaseToken();
   //   String bearerToken = await accessToken.getAccessToken();
@@ -193,7 +193,7 @@ class APIs {
   //   }
   //     }
 
-    // for sending push notification (Updated Codes)
+  // for sending push notification (Updated Codes)
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
       try {
@@ -233,4 +233,43 @@ class APIs {
     }
   }
 
+  // for deleting message
+  static Future<void> deleteMessage(Messages message) async{
+     firestore
+        .collection('chats/${getConversationID(message.toId)}/Messages/')
+        .doc(message.sent)
+        .delete();
+  }
+
+  // for updating message
+  static Future<void> updateMessage(Messages message, String updatedMsg) async{
+     firestore
+        .collection('chats/${getConversationID(message.toId)}/Messages/')
+        .doc(message.sent)
+        .update({'msg': updatedMsg});
+  }
+  
+  // for adding chat user for our conversation
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    print('data: ${data.docs}');
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      //user exists
+      print('user exists: ${data.docs.first.data()}');
+      firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id)
+          .set({});
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

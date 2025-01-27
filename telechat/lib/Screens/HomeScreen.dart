@@ -1,11 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:telechat/Screens/ProfileScreen.dart';
 import 'package:telechat/Widgets/chat_user_card.dart';
 import 'package:telechat/api/apis.dart';
+import 'package:telechat/helper/dialogs.dart';
 import 'package:telechat/models/chat_user.dart';
 
 class Homescreen extends StatefulWidget {
@@ -140,8 +139,7 @@ class _HomescreenState extends State<Homescreen> {
           padding: const EdgeInsets.only(bottom: 10),
           child: FloatingActionButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              await GoogleSignIn().signOut();
+              _addChatUserDialog();
             },
             child: Icon(Icons.add_circle_outlined),
           ),
@@ -149,4 +147,77 @@ class _HomescreenState extends State<Homescreen> {
       ),
     );
   }
+
+  //dialog for updating message content
+    void _addChatUserDialog() {
+      String email = '';
+
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                contentPadding: const EdgeInsets.only(
+                    left: 24, right: 24, top: 20, bottom: 10),
+
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    
+                //title
+                title: const Row(
+                  children: [
+                    Icon(
+                      Icons.person_add,
+                      color: Colors.blue,
+                      size: 28,
+                    ),
+                    Text('  Add User')
+                  ],
+                ),
+
+                //content
+                content: TextFormField(
+                  initialValue: '',
+                  maxLines: null,
+                  onChanged: (value) => email = value,
+                  decoration: const InputDecoration(
+                    hintText: 'Email ID',
+                    prefixIcon: Icon(Icons.email, color: Colors.blue,),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                ),
+
+                //actions
+                actions: [
+                  //cancel button
+                  MaterialButton(
+                      onPressed: () {
+                        //hide alert dialog
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      )),
+
+                  //update button
+                  MaterialButton(
+                      onPressed: ()  async {
+                        //hide alert dialog
+                        Navigator.pop(context);
+                        //for hiding bottom sheet
+                        Navigator.pop(context);
+                        if(email.isNotEmpty) {
+                          await APIs.addChatUser(email).then((value){
+                            if(!value){
+                              Dialogs.showSnackBar(context, 'User does not exists');
+                            }
+                          });
+                        }
+                      },
+                      child: const Text(
+                        'Add',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ))
+                ],
+              ));
+    }
 }

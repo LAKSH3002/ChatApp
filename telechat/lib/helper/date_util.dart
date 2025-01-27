@@ -8,6 +8,27 @@ class MyDateUtil {
     return TimeOfDay.fromDateTime(date).format(context);
   }
 
+   // for getting formatted time for sent & read
+  // [Bux Fix] Avoid bug due to context not mounted when keyboard is open in chat & bottom sheet opens
+  static String getMessageTime({required String time, required BuildContext context}) {
+    final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    final DateTime now = DateTime.now();
+
+    final String formattedTime = TimeOfDay.fromDateTime(sent).format(context);
+
+    if (now.day == sent.day &&
+        now.month == sent.month &&
+        now.year == sent.year) {
+      return formattedTime;
+    }
+
+    final String formattedDate = now.year == sent.year
+        ? '${sent.day} ${_getMonth(sent)}'
+        : '${sent.day} ${_getMonth(sent)} ${sent.year}';
+
+    return '$formattedTime - $formattedDate';
+  }
+
   //get last message time (used in chat user card)
   static String getLastMessageTime(
       {required BuildContext context,
