@@ -47,6 +47,90 @@ class APIs {
     });
   }
 
+  // for sending push notification (Updated Codes)
+  static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
+    try {
+      final body = {
+        "message": {
+          "token": chatUser.pushToken,
+          "notification": {
+            "title": me?.name, //our name should be send
+            "body": msg,
+          },
+        }
+      };
+      // Firebase Project > Project Settings > General Tab > Project ID
+      const projectID = 'telechat---chatapp';
+      // get firebase admin token
+      final bearerToken = await AccessFirebaseToken.getAccessToken;
+
+      print('bearerToken: $bearerToken');
+
+      // handle null token
+      // ignore: unnecessary_null_comparison
+      if (bearerToken == null) return;
+      var res = await post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
+        },
+        body: jsonEncode(body),
+      );
+
+      print('Response status: ${res.statusCode}');
+      print('Response body: ${res.body}');
+    } catch (e) {
+      print('\nsendPushNotificationE: $e');
+    }
+  }
+
+  /* User Addition and obtaining*/
+
+  // For creating a new user
+  static Future<void> createuser() async {
+    // Video 20 for date and time
+    final Chatuser = ChatUser(
+      id: user.uid,
+      name: user.displayName.toString(),
+      email: user.email.toString(),
+      image: user.photoURL.toString(),
+      about: 'Hey there! I am using TeleChat.',
+      lastActive: DateTime.now().toString(),
+      pushToken: '',
+    );
+    return await firestore
+        .collection('users')
+        .doc(user.uid)
+        .set(Chatuser.toJson());
+  }
+
+  // for adding chat user for our conversation
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    print('data: ${data.docs}');
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      //user exists
+      print('user exists: ${data.docs.first.data()}');
+      firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('My_users')
+          .doc(data.docs.first.id)
+          .set({});
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // For checking if user exists or not
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
@@ -65,22 +149,13 @@ class APIs {
     });
   }
 
-  // For creating a new user
-  static Future<void> createuser() async {
-    // Video 20 for date and time
-    final Chatuser = ChatUser(
-      id: user.uid,
-      name: user.displayName.toString(),
-      email: user.email.toString(),
-      image: user.photoURL.toString(),
-      about: 'Hey there! I am using TeleChat.',
-      lastActive: DateTime.now().toString(), 
-      pushToken: '',
-    );
-    return await firestore
+  // for getting specific user info
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
+      ChatUser chatUser) {
+    return firestore
         .collection('users')
-        .doc(user.uid)
-        .set(Chatuser.toJson());
+        .where('id', isEqualTo: chatUser.id)
+        .snapshots();
   }
 
   // for getting all users from firestore database - did not include this feature
@@ -108,17 +183,7 @@ class APIs {
         .update({'name': me!.name, 'about': me!.about});
   }
 
-  // useful for getting conversation id
-  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
-      ? '${user.uid}_$id'
-      : '${id}_${user.uid}';
-
-  // for getting all messages of a specific conversation from firestore db
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMsg(ChatUser user) {
-    return firestore
-        .collection('chats/${getConversationID(user.id)}/Messages/')
-        .snapshots();
-  }
+  /* Functions to store, update and send Message */
 
   // for sending message
   static Future<void> sendMessage(ChatUser chatuser, String msg) async {
@@ -132,17 +197,20 @@ class APIs {
         type: '',
         fromId: user.uid,
         sent: time);
-    final ref =
-        firestore.collection('chats/${getConversationID(chatuser.id)}/Messages/');
-    await ref.doc().set(message.toJson()).then((value)=>sendPushNotification(chatuser, msg));
+    final ref = firestore
+        .collection('chats/${getConversationID(chatuser.id)}/Messages/');
+    await ref
+        .doc()
+        .set(message.toJson())
+        .then((value) => sendPushNotification(chatuser, msg));
   }
 
   //update read status of message
   static Future<void> updateMessageReadStatus(Messages message) async {
-      firestore
-          .collection('chats/${getConversationID(message.fromId)}/Messages/')
-          .doc(message.sent)
-          .update({'read': DateTime.now().toString()});
+    firestore
+        .collection('chats/${getConversationID(message.fromId)}/Messages/')
+        .doc(message.sent)
+        .update({'read': DateTime.now().toString()});
   }
 
   //get only last message of a specific chat
@@ -155,12 +223,31 @@ class APIs {
         .snapshots();
   }
 
-   // for getting specific user info
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
-      ChatUser chatUser) {
+  // for deleting message
+  static Future<void> deleteMessage(Messages message) async {
+    firestore
+        .collection('chats/${getConversationID(message.toId)}/Messages/')
+        .doc(message.sent)
+        .delete();
+  }
+
+  // for updating message
+  static Future<void> updateMessage(Messages message, String updatedMsg) async {
+    firestore
+        .collection('chats/${getConversationID(message.toId)}/Messages/')
+        .doc(message.sent)
+        .update({'msg': updatedMsg});
+  }
+
+  // useful for getting conversation id
+  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
+  // for getting all messages of a specific conversation from firestore db
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMsg(ChatUser user) {
     return firestore
-        .collection('users')
-        .where('id', isEqualTo: chatUser.id)
+        .collection('chats/${getConversationID(user.id)}/Messages/')
         .snapshots();
   }
 
@@ -201,84 +288,4 @@ class APIs {
   //   print("\nsendPushNotification: $e");
   //   }
   //     }
-
-  // for sending push notification (Updated Codes)
-  static Future<void> sendPushNotification(
-      ChatUser chatUser, String msg) async {
-      try {
-      final body = {
-        "message": {
-          "token": chatUser.pushToken,
-          "notification": {
-            "title": me?.name, //our name should be send
-            "body": msg,
-          },
-        }
-      };
-      // Firebase Project > Project Settings > General Tab > Project ID
-      const projectID = 'telechat---chatapp';
-      // get firebase admin token
-      final bearerToken = await AccessFirebaseToken.getAccessToken;
-
-      print('bearerToken: $bearerToken');
-
-      // handle null token
-      // ignore: unnecessary_null_comparison
-      if (bearerToken == null) return;
-      var res = await post(
-        Uri.parse(
-            'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
-        },
-        body: jsonEncode(body),
-      );
-
-      print('Response status: ${res.statusCode}');
-      print('Response body: ${res.body}');
-    } catch (e) {
-      print('\nsendPushNotificationE: $e');
-    }
-  }
-
-  // for deleting message
-  static Future<void> deleteMessage(Messages message) async{
-     firestore
-        .collection('chats/${getConversationID(message.toId)}/Messages/')
-        .doc(message.sent)
-        .delete();
-  }
-
-  // for updating message
-  static Future<void> updateMessage(Messages message, String updatedMsg) async{
-     firestore
-        .collection('chats/${getConversationID(message.toId)}/Messages/')
-        .doc(message.sent)
-        .update({'msg': updatedMsg});
-  }
-  
-  // for adding chat user for our conversation
-  static Future<bool> addChatUser(String email) async {
-    final data = await firestore
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
-
-    print('data: ${data.docs}');
-
-    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
-      //user exists
-      print('user exists: ${data.docs.first.data()}');
-      firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('My_users')
-          .doc(data.docs.first.id)
-          .set({});
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
